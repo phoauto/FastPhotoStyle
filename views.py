@@ -8,12 +8,12 @@ import requests
 from io import BytesIO
 
 import torch
-import process_stylization
-from photo_wct import PhotoWCT
-from photo_gif import GIFSmoothing
+from . import process_stylization
+from .photo_wct import PhotoWCT
+from .photo_gif import GIFSmoothing
 
 p_wct = PhotoWCT()
-p_wct.load_state_dict(torch.load('./PhotoWCTModels/photo_wct.pth'))
+p_wct.load_state_dict(torch.load('./gan/PhotoWCTModels/photo_wct.pth'))
 # p_wct.cuda(0)
 p_pro = GIFSmoothing(r=35, eps=0.001)
 
@@ -25,7 +25,7 @@ def style(request):
         cont_img = Image.open(BytesIO(requests.get(url).content)).convert('RGB')
 
         style = params.get('style', 'sunset')
-        styl_img = Image.open('./images/' + style + '.png').convert('RGB')
+        styl_img = Image.open('./gan/images/' + style + '.png').convert('RGB')
 
         img = process_stylization.stylization(
             stylization_module=p_wct,

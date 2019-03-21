@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 import torch
 import torch.nn as nn
-from models import VGGEncoder, VGGDecoder
+from .models import VGGEncoder, VGGDecoder
 
 
 class PhotoWCT(nn.Module):
