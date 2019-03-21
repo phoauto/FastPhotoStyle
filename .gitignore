@@ -2,7 +2,6 @@ segmentation/
 outputs/
 models/
 results/
-images/
 data/
 logs/
 examples
