@@ -24,8 +24,8 @@ def style(request):
         url = params.get('url', '')
         cont_img = Image.open(BytesIO(requests.get(url).content)).convert('RGB')
 
-        style = params.get('style', 'sunset')
-        styl_img = Image.open('./gan/images/' + style + '.png').convert('RGB')
+        style = params.get('style', 'sunset1')
+        styl_img = Image.open('./gan/images/' + style + '.jpg').convert('RGB')
 
         img = process_stylization.stylization(
             stylization_module=p_wct,
