@@ -64,17 +64,16 @@ def stylization(stylization_module, smoothing_module, content_image_path, style_
         cont_img = Image.open(content_image_path).convert('RGB')
         styl_img = Image.open(style_image_path).convert('RGB')
 
-        new_cw, new_ch = memory_limit_image_resize(cont_img)
-        new_sw, new_sh = memory_limit_image_resize(styl_img)
+    #    new_cw, new_ch = memory_limit_image_resize(cont_img)
+    #    new_sw, new_sh = memory_limit_image_resize(styl_img)
         cont_pilimg = cont_img.copy()
         cw = cont_pilimg.width
         ch = cont_pilimg.height
         try:
             cont_seg = Image.open(content_seg_path)
             styl_seg = Image.open(style_seg_path)
-            cont_seg.resize((new_cw,new_ch),Image.NEAREST)
-            styl_seg.resize((new_sw,new_sh),Image.NEAREST)
-
+            # cont_seg.resize((new_cw,new_ch),Image.NEAREST)
+            # styl_seg.resize((new_sw,new_sh),Image.NEAREST)
         except:
             cont_seg = []
             styl_seg = []
@@ -86,9 +85,6 @@ def stylization(stylization_module, smoothing_module, content_image_path, style_
             cont_img = cont_img.cuda(0)
             styl_img = styl_img.cuda(0)
             stylization_module.cuda(0)
-
-        # cont_img = Variable(cont_img, volatile=True)
-        # styl_img = Variable(styl_img, volatile=True)
 
         cont_seg = np.asarray(cont_seg)
         styl_seg = np.asarray(styl_seg)
@@ -105,9 +101,9 @@ def stylization(stylization_module, smoothing_module, content_image_path, style_
                 stylized_img = nn.functional.upsample(stylized_img, size=(ch,cw), mode='bilinear')
             utils.save_image(stylized_img.data.cpu().float(), output_image_path, nrow=1, padding=0)
 
-            with Timer("Elapsed time in propagation: %f"):
-                out_img = smoothing_module.process(output_image_path, content_image_path)
-            out_img.save(output_image_path)
+            # with Timer("Elapsed time in propagation: %f"):
+            #    out_img = smoothing_module.process(output_image_path, content_image_path)
+            # out_img.save(output_image_path)
 
             if not cuda:
                 print("NotImplemented: The CPU version of smooth filter has not been implemented currently.")
@@ -120,9 +116,9 @@ def stylization(stylization_module, smoothing_module, content_image_path, style_
         else:
             with Timer("Elapsed time in stylization: %f"):
                 stylized_img = stylization_module.transform(cont_img, styl_img, cont_seg, styl_seg)
-            if ch != new_ch or cw != new_cw:
-                print("De-resize image: (%d,%d)->(%d,%d)" %(new_cw,new_ch,cw,ch))
-                stylized_img = nn.functional.upsample(stylized_img, size=(ch,cw), mode='bilinear')
+            # if ch != new_ch or cw != new_cw:
+            #    print("De-resize image: (%d,%d)->(%d,%d)" %(new_cw,new_ch,cw,ch))
+            #    stylized_img = nn.functional.upsample(stylized_img, size=(ch,cw), mode='bilinear')
             grid = utils.make_grid(stylized_img.data, nrow=1, padding=0)
             ndarr = grid.mul(255).clamp(0, 255).byte().permute(1, 2, 0).cpu().numpy()
             out_img = Image.fromarray(ndarr)

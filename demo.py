@@ -17,7 +17,6 @@ parser.add_argument('--style_seg_path', default=[])
 parser.add_argument('--output_image_path', default='./results/example1.png')
 parser.add_argument('--save_intermediate', action='store_true', default=False)
 parser.add_argument('--fast', action='store_true', default=False)
-parser.add_argument('--no_post', action='store_true', default=False)
 # default=1
 parser.add_argument('--cuda', type=int, default=0, help='Disable CUDA.')
 args = parser.parse_args()
@@ -45,5 +44,5 @@ process_stylization.stylization(
     output_image_path=args.output_image_path,
     cuda=args.cuda,
     save_intermediate=args.save_intermediate,
-    no_post=args.no_post
+    no_post=False
 )
