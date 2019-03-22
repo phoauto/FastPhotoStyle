@@ -17,6 +17,14 @@ p_wct.load_state_dict(torch.load('./gan/PhotoWCTModels/photo_wct.pth'))
 # p_wct.cuda(0)
 p_pro = GIFSmoothing(r=35, eps=0.001)
 
+style_names = ("art", "cloud", "fog", "night", "ocean", "ripple", "sea", "sky", "snow", "sunny", "sunset", "water", "winter")
+style_nums = (4, 2, 2, 3, 2, 1, 1, 3, 1, 2, 2, 2, 2)
+styles = {}
+for i, name in enumerate(style_names): 
+    for k in range(tyle_nums[i]):
+        key = name + str(k + 1)
+        styles[key] = Image.open('./gan/images/' + key + '.jpg').convert('RGB')
+
 size = 128, 128
 
 @api_view(['GET'])
@@ -43,15 +51,22 @@ def image(request):
     except ValueError as e:
         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
 
+max_w = 640
+max_size = 640, 1024
+
 @api_view(['GET'])
 def style(request):
     try:
         params = request.GET
         url = params.get('url', '')
-        cont_img = Image.open(BytesIO(requests.get(url).content)).convert('RGB')
+        cont_img = Image.open(BytesIO(requests.get(url).content))
+        width, height = cont_img.size
+        if width > max_w :
+            cont_img.thumbnail(max_size, Image.ANTIALIAS)
+        cont_img = cont_img.convert('RGB')
 
-        style = params.get('style', 'sunset1')
-        styl_img = Image.open('./gan/images/' + style + '.jpg').convert('RGB')
+        style_key = params.get('style', 'sunset1')
+        styl_img = styles[style_key]
 
         img = process_stylization.stylization(
             stylization_module=p_wct,
