@@ -21,7 +21,7 @@ style_names = ("art", "cloud", "fog", "night", "ocean", "ripple", "sea", "sky", 
 style_nums = (4, 2, 2, 3, 2, 1, 1, 3, 1, 2, 2, 2, 2)
 styles = {}
 for i, name in enumerate(style_names): 
-    for k in range(tyle_nums[i]):
+    for k in range(style_nums[i]):
         key = name + str(k + 1)
         styles[key] = Image.open('./gan/images/' + key + '.jpg').convert('RGB')
 
