@@ -17,6 +17,22 @@ p_wct.load_state_dict(torch.load('./gan/PhotoWCTModels/photo_wct.pth'))
 # p_wct.cuda(0)
 p_pro = GIFSmoothing(r=35, eps=0.001)
 
+size = 128, 128
+
+@api_view(['GET'])
+def image(request):
+    try:
+        params = request.GET
+        style = params.get('style', '')
+        img = Image.open('./gan/images/' + style + '.jpg')
+        img.thumbnail(size, Image.ANTIALIAS)
+
+        imgBytes = BytesIO()
+        img.save(imgBytes, format='jpg')
+        return HttpResponse(imgBytes.getvalue(), content_type="image/jpg")
+    except ValueError as e:
+        return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def style(request):
     try:
@@ -38,8 +54,8 @@ def style(request):
             save_intermediate=False,
             no_post=False
         )
-        imgByteArr = BytesIO()
-        img.save(imgByteArr, format='PNG')
-        return HttpResponse(imgByteArr.getvalue(), content_type="image/png")
+        imgBytes = BytesIO()
+        img.save(imgBytes, format='PNG')
+        return HttpResponse(imgBytes.getvalue(), content_type="image/png")
     except ValueError as e:
         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
