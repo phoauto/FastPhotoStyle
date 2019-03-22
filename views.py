@@ -51,8 +51,8 @@ def image(request):
     except ValueError as e:
         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
 
-max_w = 640
-max_size = 640, 1024
+max_w = 512
+max_size = 512, 640
 
 @api_view(['GET'])
 def style(request):
