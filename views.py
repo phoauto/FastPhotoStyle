@@ -34,7 +34,7 @@ def image(request):
         top = (height - new_height)/2
         right = (width + new_width)/2
         bottom = (height + new_height)/2
-        img.crop((left, top, right, bottom))
+        img = img.crop((left, top, right, bottom))
         img.thumbnail(size, Image.ANTIALIAS)
 
         imgBytes = BytesIO()
