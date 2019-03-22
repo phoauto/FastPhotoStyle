@@ -25,11 +25,21 @@ def image(request):
         params = request.GET
         style = params.get('style', '')
         img = Image.open('./gan/images/' + style + '.jpg')
+
+        width, height = img.size   # Get dimensions
+        new_width = width if height / width > 0.75 else height * 4 / 3
+        new_height = height if height / width <= 0.75 else width * 3 / 4
+        
+        left = (width - new_width)/2
+        top = (height - new_height)/2
+        right = (width + new_width)/2
+        bottom = (height + new_height)/2
+        img.crop((left, top, right, bottom))
         img.thumbnail(size, Image.ANTIALIAS)
 
         imgBytes = BytesIO()
-        img.save(imgBytes, format='jpg')
-        return HttpResponse(imgBytes.getvalue(), content_type="image/jpg")
+        img.save(imgBytes, format='png')
+        return HttpResponse(imgBytes.getvalue(), content_type="image/png")
     except ValueError as e:
         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
 
